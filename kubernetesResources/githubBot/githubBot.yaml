@@ -1,0 +1,75 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: githubbot-deployment
+#  namespace: mongospace
+spec:
+  selector:
+    matchLabels:
+      app: githubbot
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template: # create pods using pod definition in this template
+    metadata:
+      labels:
+        app: githubbot
+    spec:
+      containers:
+      - name: bot
+        image: teamplaya/githubbot:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+      #  Tomcat is configured to start on port 8080
+          - name: BACKEND_SERVICE_PORT
+            value: "8080"
+
+          - name: FRONTEND_SERVICE_PORT
+            value: "8080"
+#  <dnsName<:8080/github/receive   -> ingress controller forwards all traffic to /github -> however /github is still included in url
+# TODO add dynamic sub path through env var later
+#          - name: INGRESS_SUB_PATH
+#            value: "github"
+
+          - name: MY_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+
+          - name: MY_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+
+          - name: MY_POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+
+          - name: MY_POD_SERVICE_ACCOUNT
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.serviceAccountName
+
+---
+
+# TODO Replace with ingress :     LoadBalancer -----> Nginx ingress Controller ----> frontend Service & Github Bot service
+ apiVersion: v1
+ kind: Service
+ metadata:
+#   namespace: mongospace
+   name: githubbot-service
+   labels:
+     run: githubbot-service
+ spec:
+   ports:
+   - port: 8080
+     protocol: TCP
+   type: ClusterIP
+   selector:
+     app: githubbot

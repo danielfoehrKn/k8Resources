@@ -1,0 +1,29 @@
+1. OpenSSL binary is available in Git Bash for windows installation dir
+
+C:\Program Files\Git
+
+-> so open Git bash and execute:
+
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls-key.key -out tls-cert.crt
+
+2. Collect cert from dir
+
+C:\Users\D060239
+-> Private key: .key ending
+
+3. Create dhparam.pem file
+
+openssl dhparam -out dhparam.pem 2048
+
+4. Create Secrets in cluster
+
+kubectl create secret tls tls-certificate --key tls-key.key --cert tls-cert.crt --namespace=ingress-nginx
+
+kubectl create secret generic tls-dhparam --from-file=dhparam.pem --namespace=ingress-nginx
+
+
+5. Reference secrets from Ingress Resource to instruct Ingress Controller
+
+6. See Result
+
+

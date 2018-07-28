@@ -1,0 +1,52 @@
+# Version  no Cert-manager
+#apiVersion: extensions/v1beta1
+#kind: Ingress
+#metadata:
+#  name: frontend-ingress
+#  annotations:
+#    kubernetes.io/ingress.class: nginx
+#spec:
+#  rules:
+#  - http:
+#      paths:
+#      - path: /
+#        backend:
+#          serviceName: frontend-service
+#          servicePort: 8080
+
+
+# INgress resource in default namespace
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: frontend-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    ingress.kubernetes.io/ssl-redirect: "true"
+#     trigger Certificate resources to be automatically created by ingress-shim
+#    kubernetes.io/tls-acme: "true"
+#    then need to tell from which issuer to provide automatically
+    certmanager.k8s.io/issuer: letsencrypt-production-issuer
+spec:
+  tls:
+  - hosts:
+    - k8blackwater.ddnsking.com
+#    needs to match created cert in cert-managaer/certificate that is automatically being created by the cert manager when creating the Certificate resource
+    secretName: letsencrypt-production-cert-secret
+  rules:
+  - host: k8blackwater.ddnsking.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: frontend-service
+          servicePort: 8080
+      - path: /github
+        backend:
+          serviceName: githubbot-service
+          servicePort: 8080
+      - path: /analyzer
+        backend:
+          serviceName: goanalyzer-service
+          servicePort: 8080
+

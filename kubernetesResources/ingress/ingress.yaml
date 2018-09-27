@@ -1,25 +1,10 @@
-# Version  no Cert-manager
-#apiVersion: extensions/v1beta1
-#kind: Ingress
-#metadata:
-#  name: frontend-ingress
-#  annotations:
-#    kubernetes.io/ingress.class: nginx
-#spec:
-#  rules:
-#  - http:
-#      paths:
-#      - path: /
-#        backend:
-#          serviceName: frontend-service
-#          servicePort: 8080
-
-
-# INgress resource in default namespace
+# Ingress resource in default namespace
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: frontend-ingress
+#  ingress controller in foreign namespace can access (get, list, watch) it - because of clusterrole
+  namespace: default
   annotations:
     kubernetes.io/ingress.class: nginx
     ingress.kubernetes.io/ssl-redirect: "true"
@@ -34,7 +19,7 @@ spec:
 #    needs to match created cert in cert-managaer/certificate that is automatically being created by the cert manager when creating the Certificate resource
     secretName: letsencrypt-production-cert-secret
   rules:
-  - host: k8blackwater.ddnsking.com
+  - host: k8blackwater-auto.ddnsking.com
     http:
       paths:
       - path: /

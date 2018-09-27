@@ -1,0 +1,14 @@
+---
+# Source: nginx-ingress/templates/controller-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: nginx-ingress
+    chart: nginx-ingress-0.28.2
+    component: "controller"
+    heritage: Tiller
+
+  name: nginx-ingress-controller
+data:
+  enable-vts-status: "false"

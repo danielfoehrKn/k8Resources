@@ -1,6 +1,4 @@
 #https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/mandatory.yaml
-# Customize by adding 1) self-signed cert (NEXT: create ingress to my service https://hackernoon.com/setting-up-nginx-ingress-on-kubernetes-2b733d8d2f45 2)letsEncrypt with kube-lego (after)
-#  - also added LoadBalancer pointing to ingressController
 ---
 
 apiVersion: v1
@@ -233,21 +231,18 @@ metadata:
   namespace: ingress-nginx
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: ingress-nginx
   template:
     metadata:
       labels:
-        app: ingress-nginx
+        app: ingress-controller-nginx
       annotations:
         prometheus.io/port: '10254'
         prometheus.io/scrape: 'true'
     spec:
       serviceAccountName: nginx-ingress-serviceaccount
-      volumes:
-      # Adding volume for certifacte in secret -> mounted in volumeMount
-      #      https://kubernetes.io/docs/concepts/storage/volumes/  -> secrets only live in the RAM
+#      volumes:
+#      # Adding volume for certifacte in secret -> mounted in volumeMount
+#      #      https://kubernetes.io/docs/concepts/storage/volumes/  -> secrets only live in the RAM
       - name: tls-dhparam-vol
         secret:
           secretName: tls-dhparam

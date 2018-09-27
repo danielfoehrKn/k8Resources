@@ -3,15 +3,16 @@ kind: Certificate
 metadata:
   name: letsencrypt-production-cert
 spec:
+ # being filled by cert-manager and referred to in ingress resource
   secretName: letsencrypt-production-cert-secret
   dnsNames:
-  - k8blackwater.ddnsking.com
+  - k8blackwater-auto.ddnsking.com
   acme:
     config:
     - http01:
         ingressClass: nginx
       domains:
-      - k8blackwater.ddnsking.com
+      - k8blackwater-auto.ddnsking.com
   issuerRef:
     name: letsencrypt-production-issuer
     kind: Issuer

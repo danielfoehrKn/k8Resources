@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Machine Type n1-standard-2 is needed for full istio installation + other applications
+gcloud beta container --project "k8blackwater" clusters create "k8blackwater-auto-istio" --zone "europe-west1-b" --username "admin" --cluster-version "1.9.7-gke.6" --machine-type "n1-standard-2" --image-type "COS" --disk-type "pd-standard" --disk-size "100" --service-account "blackwaterdefault@k8blackwater.iam.gserviceaccount.com" --preemptible --num-nodes "4" --enable-cloud-logging --enable-cloud-monitoring --network "projects/k8blackwater/global/networks/default" --subnetwork "projects/k8blackwater/regions/europe-west1/subnetworks/default" --addons HorizontalPodAutoscaling,HttpLoadBalancing,KubernetesDashboard --no-enable-autoupgrade --no-enable-autorepair

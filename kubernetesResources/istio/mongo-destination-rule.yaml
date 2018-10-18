@@ -1,0 +1,11 @@
+# see https://istio.io/help/faq/security/
+# mongo db is a non-istio service
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+ name: "mongo"
+spec:
+ host: "mongo-service.default.svc.cluster.local"
+ trafficPolicy:
+   tls:
+     mode: DISABLE

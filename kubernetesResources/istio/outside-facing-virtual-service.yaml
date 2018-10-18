@@ -1,0 +1,41 @@
+# Attention: Order of the uri matches is important! If the / matching all would be first, the other listeners would not be created in the ingressgateway-envoy
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: frontend-virtual-service
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - k8blackwater-gateway
+  http:
+  - match:
+    - uri:
+    #  NOTE: all routes staerting with /github should be matched
+        prefix: /github
+    route:
+    - destination:
+        port:
+          number: 8080
+        host: githubbot-service
+  - match:
+    - uri:
+        prefix: /analyzer
+    route:
+    - destination:
+        port:
+          number: 8080
+        host: goanalyzer-service
+  - match:
+    - uri:
+#    NOTE: UI wants to load other resources from server like React bundle.js or css. Hence we need the prefix,
+#    If only static HTML would be presented: only "exact" would be sufficient
+        prefix: /
+    route:
+    - destination:
+        host: frontend-service.default.svc.cluster.local
+        port:
+          number: 8080
+    websocketUpgrade: true
+
+

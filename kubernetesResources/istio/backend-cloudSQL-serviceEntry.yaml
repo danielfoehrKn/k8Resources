@@ -1,0 +1,36 @@
+# Pod makes requests to `www.googleapis.com` for Authentication
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: www.googleapis.com
+spec:
+  hosts:
+  - "*.googleapis.com"
+  - 169.254.169.254 # metadata.google.internal   -> IP was being logged in istio-proxy with 404
+  ports:
+  - number: 443
+    name: https
+    protocol: HTTPS
+  - number: 80
+    name: http
+    protocol: HTTP
+  resolution: DNS
+  location: MESH_EXTERNAL
+
+---
+# jdbc connection to CLoudSQL instance
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: cloud-sql-instance
+#  namespace: istio-example-cloud-sql
+spec:
+  hosts:
+  # use `gcloud sql instances list` to find out the IP address of your Google Cloud Instance
+  - 104.155.22.115
+  ports:
+  - name: tcp
+    number: 3307 # at the moment, Google Cloud SQL always available on port 3307
+    protocol: tcp # enable TCP traffic
+  location: MESH_EXTERNAL
+  resolution: DNS

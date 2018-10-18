@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: k8blackwater-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller - installed as part of the core istio components
+  servers:
+  # https://github.com/istio/istio/issues/7242   --> Port 80 is default in helm chart for LoadBalancer service
+  # Need to alter the Loadbalancer service to expose new port  --> NOT ONLY GATEWAY -> Gateway changes only routes in the Ingress-Gateway Envoy that is being delegated to!
+  # LoadBalancer: kubectl describe service -n istio-system istio-ingressgateway
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
